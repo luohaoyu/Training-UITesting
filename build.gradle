@@ -1,0 +1,56 @@
+group 'com.bluemoon'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+
+sourceCompatibility = 1.5
+
+repositories {
+    mavenCentral()
+//    mavenLocal()
+//    maven{
+//        url 'http://central.maven.org/maven2/'
+//    }
+//    maven{
+//        url 'http://repo.jenkins-ci.org/releases/'
+//    }
+}
+
+dependencies {
+//    testCompile group: 'org.testng', name: 'testng', version: '6.8.8'
+//    testCompile group: 'org.seleniumhq.selenium', name: 'selenium-server-standalone', version: '2.53.0'
+//    testCompile group: 'org.uncommons', name: 'reportng', version: '1.1.4'
+//    testCompile group: 'io.appium', name: 'java-client', version: '4.1.2'
+//    testCompile group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '2.53.1'
+    testCompile fileTree(dir:'libs',include:"*.jar")
+    testCompile group: 'org.apache.commons', name: 'commons-lang3', version: '3.4'
+    testCompile group: 'commons-validator', name: 'commons-validator', version: '1.4.0'
+    testCompile group: 'commons-lang', name: 'commons-lang', version: '2.6'
+
+}
+
+test {
+    testLogging {
+        exceptionFormat = 'full'
+        showStackTraces = "true"
+    }
+    // show standard out and standard error of the test JVM(s) on the console
+    testLogging.showStandardStreams = true
+    // listen to events in the test execution lifecycle
+    beforeTest { descriptor ->
+        logger.lifecycle("Running test: " + descriptor)
+    }
+
+    // listen to standard out and standard error of the test JVM(s)
+    onOutput { descriptor, event ->
+        logger.lifecycle("Test: " + descriptor + " produced standard out/err: " + event.message )
+    }
+    useTestNG()
+    options {
+        listeners << 'org.uncommons.reportng.HTMLReporterg.uncommons.reportng.HTMLReporte'
+        listeners << 'org.uncommons.reportng.JUnitXMLReporter'
+
+    }
+
+}
+//test.dependsOn startAppium
